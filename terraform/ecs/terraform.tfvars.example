@@ -1,0 +1,2 @@
+# Copy to terraform.tfvars and set a strong password (no @ / " or spaces)
+db_password = "ChangeMe12345"

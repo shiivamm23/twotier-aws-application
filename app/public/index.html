@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Two-Tier Task App</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 520px; margin: 40px auto; padding: 0 16px; }
+    form { display: flex; gap: 8px; }
+    input { flex: 1; padding: 8px; }
+    button { padding: 8px 12px; cursor: pointer; }
+    li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+  <h1>Task List</h1>
+  <p>Tier 1: Node.js app &rarr; Tier 2: PostgreSQL</p>
+  <form id="f"><input id="t" placeholder="New task" required /><button>Add</button></form>
+  <ul id="list"></ul>
+  <script>
+    async function load() {
+      const tasks = await (await fetch('/api/tasks')).json();
+      const ul = document.getElementById('list');
+      ul.innerHTML = '';
+      tasks.forEach(t => {
+        const li = document.createElement('li');
+        li.textContent = t.title;
+        const b = document.createElement('button');
+        b.textContent = 'Delete';
+        b.onclick = async () => { await fetch('/api/tasks/' + t.id, { method: 'DELETE' }); load(); };
+        li.appendChild(b);
+        ul.appendChild(li);
+      });
+    }
+    document.getElementById('f').onsubmit = async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('t');
+      await fetch('/api/tasks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: input.value }) });
+      input.value = '';
+      load();
+    };
+    load();
+  </script>
+</body>
+</html>
