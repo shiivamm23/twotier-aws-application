@@ -55,6 +55,6 @@ pipeline {
     post {
         success { echo 'Deployment successful' }
         failure { echo 'Pipeline failed - check the stage logs' }
-        always  { sh 'docker image prune -f' }
+        // always  { sh 'docker image prune -f' }
     }
 }
